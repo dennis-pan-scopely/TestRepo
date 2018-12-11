@@ -15,7 +15,7 @@ def automatic_merge(branches_flow):
         if next_index < len(branches_flow):
             onto = branches_flow[next_index]
             shell1 = 'git checkout %s' % onto
-            shell2 = 'git merge refs/heads/%s --no-edit' % branch
+            shell2 = 'git merge origin/%s --no-edit' % branch
             # shell3 = 'git push'
             call1 = shell1.split(' ')
             call2 = shell2.split(' ')
