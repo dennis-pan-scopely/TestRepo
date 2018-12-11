@@ -14,8 +14,15 @@ def automatic_merge(branches_flow):
         next_index = next_index + 1
         if next_index < len(branches_flow):
             onto = branches_flow[next_index]
-            print('git checkout %s && git merge refs/heads/%s && git push' % (onto, branch))
-            exitcode = subprocess.call('git checkout %s && git merge refs/heads/%s' % (onto, branch))
+            shell1 = 'git checkout %s' % onto
+            shell2 = 'git merge refs/heads/%s' % branch
+            shell3 = 'git push'
+            call1 = shell1.split(' ')
+            call2 = shell2.split(' ')
+            call3 = shell3.split(' ')
+            exitcode = subprocess.call(call1)
+            exitcode |= subprocess.call(call2)
+            exitcode |= subprocess.call(call3)
             if exitcode:
                 print('Merge of %s onto %s failed, must reset to original state' % (branch, onto))
                 failed = True
