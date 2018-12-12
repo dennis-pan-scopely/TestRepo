@@ -16,10 +16,12 @@ def create_pr(target_branch, base_branch):
                "head": target_branch,
                "base": base_branch,
                "body": "",
-               "maintainer_can_modify": "true"}
+               "maintainer_can_modify": True}
     json_str = json.dumps(pr_dict)
-    shell = "curl -X POST -u %s:%s %s -d '%s'" % (github_user, api_token, PR_URL, json_str)
+    shell = "curl -X POST -u %s:%s %s -d" % (github_user, api_token, PR_URL)
     call = shell.split(' ')
+    call.append("%s" % json_str)
+    print(call)
     exitcode = subprocess.call(call)
     return exitcode
 
