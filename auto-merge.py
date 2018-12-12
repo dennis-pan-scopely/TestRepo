@@ -1,6 +1,7 @@
 import subprocess
 import sys
 import json
+import os
 
 # command line arguments
 branches_str = sys.argv[1]
@@ -45,7 +46,7 @@ def automatic_merge(branches_flow):
             exitcode |= subprocess.call(call3)
             if exitcode:
                 print('Merge of %s onto %s failed, creating PR' % (branch, onto))
-                # TODO create PR
+                create_pr(branch, onto)
                 failed = True
                 break
 
@@ -54,9 +55,11 @@ def automatic_merge(branches_flow):
 
 
 def main():
-    # j = json.loads(branches_str)
-    # automatic_merge(j)
-    create_pr("bugs/rc001", "releases/v0.1")
+    if os.environ['GITHUB_PR_TARGET_BRANCH'] in branches_str:
+        j = json.loads(branches_str)
+        automatic_merge(j)
+    else:
+        print("PR target branch %s is not in branches_flow, skipping merge" % os.environ['GITHUB_PR_TARGET_BRANCH'])
 
 
 if __name__ == "__main__":
