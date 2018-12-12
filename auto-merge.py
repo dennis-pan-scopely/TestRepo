@@ -4,6 +4,24 @@ import json
 
 # command line arguments
 branches_str = sys.argv[1]
+github_user = sys.argv[2]
+api_token = sys.argv[3]
+
+# constants
+PR_URL = "https://api.github.com/repos/dennis-pan-scopely/TestRepo/pulls"
+
+
+def create_pr(target_branch, base_branch):
+    pr_dict = {"title": "%s to %s" % (target_branch, base_branch),
+               "head": target_branch,
+               "base": base_branch,
+               "body": "",
+               "maintainer_can_modify": "true"}
+    json_str = json.dumps(pr_dict)
+    shell = "curl -X POST -u %s:%s %s -d '%s'" % (github_user, api_token, PR_URL, json_str)
+    call = shell.split(' ')
+    exitcode = subprocess.call(call)
+    return exitcode
 
 
 def automatic_merge(branches_flow):
@@ -24,7 +42,8 @@ def automatic_merge(branches_flow):
             exitcode |= subprocess.call(call2)
             exitcode |= subprocess.call(call3)
             if exitcode:
-                print('Merge of %s onto %s failed, must reset to original state' % (branch, onto))
+                print('Merge of %s onto %s failed, creating PR' % (branch, onto))
+                # TODO create PR
                 failed = True
                 break
 
@@ -33,8 +52,9 @@ def automatic_merge(branches_flow):
 
 
 def main():
-    j = json.loads(branches_str)
-    automatic_merge(j)
+    # j = json.loads(branches_str)
+    # automatic_merge(j)
+    create_pr("bugs/rc001", "releases/v0.1")
 
 
 if __name__ == "__main__":
