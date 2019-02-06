@@ -38,11 +38,11 @@ def automatic_merge(branches_flow):
             commit_message = 'auto-merging %s onto %s' % (branch, onto)
             shell1 = 'git checkout %s' % onto
             shell2 = 'git pull'
-            shell3 = 'git merge origin/%s -m %s' % (branch, commit_message)
+            shell3 = 'git ; merge ; origin/%s ; -m ; %s' % (branch, commit_message)
             shell4 = 'git push'
             call1 = shell1.split(' ')
             call2 = shell2.split(' ')
-            call3 = shell3.split(' ')
+            call3 = shell3.split(' ; ')
             call4 = shell4.split(' ')
             exitcode = subprocess.call(call1)
             exitcode |= subprocess.call(call2)
