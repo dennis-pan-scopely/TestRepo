@@ -9,7 +9,7 @@ github_user = sys.argv[2]
 api_token = sys.argv[3]
 
 # constants
-PR_URL = "https://api.github.com/repos/dennis-pan-scopely/TestRepo/pulls"
+PR_URL = "https://api.github.com/repos/scopely/DiceUnity/pulls"
 
 
 def create_pr(target_branch, base_branch):
@@ -36,14 +36,17 @@ def automatic_merge(branches_flow):
         if next_index < len(branches_flow):
             onto = branches_flow[next_index]
             shell1 = 'git checkout %s' % onto
-            shell2 = 'git merge refs/heads/%s' % branch
-            shell3 = 'git push'
+            shell2 = 'git pull'
+            shell3 = 'git merge origin/%s -m "auto-merging %s onto %s"' % (branch, branch, onto)
+            shell4 = 'git push'
             call1 = shell1.split(' ')
             call2 = shell2.split(' ')
             call3 = shell3.split(' ')
+            call4 = shell4.split(' ')
             exitcode = subprocess.call(call1)
             exitcode |= subprocess.call(call2)
             exitcode |= subprocess.call(call3)
+            exitcode |= subprocess.call(call4)
             if exitcode:
                 print('Merge of %s onto %s failed, creating PR' % (branch, onto))
                 create_pr(branch, onto)
