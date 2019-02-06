@@ -35,9 +35,10 @@ def automatic_merge(branches_flow):
         next_index = next_index + 1
         if next_index < len(branches_flow):
             onto = branches_flow[next_index]
+            # commit_message = 'auto-merging%sonto%s' % (branch, onto)
             shell1 = 'git checkout %s' % onto
             shell2 = 'git pull'
-            shell3 = 'git merge origin/%s -m "auto-merging %s onto %s"' % (branch, branch, onto)
+            shell3 = 'git merge origin/%s -m auto-merging' % branch
             shell4 = 'git push'
             call1 = shell1.split(' ')
             call2 = shell2.split(' ')
