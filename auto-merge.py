@@ -36,7 +36,7 @@ def automatic_merge(branches_flow):
         next_index = next_index + 1
         if next_index < len(branches_flow):
             onto = branches_flow[next_index]
-            intermediate_branch_name = branch + '_to_' + onto + time.time()
+            intermediate_branch_name = branch + '_to_' + onto + str(time.time())
             commit_message = 'auto-merging %s onto %s' % (branch, onto)
             command_array = [
                 ['git', 'checkout', onto],
