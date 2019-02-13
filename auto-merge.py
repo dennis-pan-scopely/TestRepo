@@ -53,6 +53,7 @@ def automatic_merge(branches_flow):
                 print('Merge of %s onto %s failed, creating PR' % (branch, onto))
                 # create an intermediate branch:
                 subprocess.call(['git', 'checkout', '-b', intermediate_branch_name])
+                subprocess.call(['git', 'commit', '-m', intermediate_branch_name])
                 subprocess.call(['git', 'push', '-u', 'origin', intermediate_branch_name])
                 create_pr(intermediate_branch_name, onto)
                 failed = True
