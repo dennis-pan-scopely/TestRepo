@@ -2,6 +2,7 @@ import subprocess
 import sys
 import json
 import os
+import time
 
 # command line arguments
 branches_str = sys.argv[1]
@@ -9,7 +10,7 @@ github_user = sys.argv[2]
 api_token = sys.argv[3]
 
 # constants
-PR_URL = "https://api.github.com/repos/scopely/DiceUnity/pulls"
+PR_URL = "https://api.github.com/repos/dennis-pan-scopely/TestRepo/pulls"
 
 
 def create_pr(target_branch, base_branch):
@@ -35,22 +36,25 @@ def automatic_merge(branches_flow):
         next_index = next_index + 1
         if next_index < len(branches_flow):
             onto = branches_flow[next_index]
+            intermediate_branch_name = branch + '_to_' + onto + time.time()
             commit_message = 'auto-merging %s onto %s' % (branch, onto)
-            shell1 = 'git checkout %s' % onto
-            shell2 = 'git pull'
-            shell3 = 'git ; merge ; origin/%s ; -m ; %s' % (branch, commit_message)
-            shell4 = 'git push'
-            call1 = shell1.split(' ')
-            call2 = shell2.split(' ')
-            call3 = shell3.split(' ; ')
-            call4 = shell4.split(' ')
-            exitcode = subprocess.call(call1)
-            exitcode |= subprocess.call(call2)
-            exitcode |= subprocess.call(call3)
-            exitcode |= subprocess.call(call4)
+            command_array = [
+                ['git', 'checkout', onto],
+                ['git', 'pull'],
+                ['git', 'merge', 'origin/%s' % branch, '-m', commit_message],
+                ['git', 'push']
+            ]
+
+            exitcode = 0
+            for command in command_array:
+                exitcode |= subprocess.call(command)
+
             if exitcode:
                 print('Merge of %s onto %s failed, creating PR' % (branch, onto))
-                create_pr(branch, onto)
+                # create an intermediate branch:
+                subprocess.call(['git', 'checkout', '-b', intermediate_branch_name])
+                subprocess.call(['git', 'push', '-u', 'origin', intermediate_branch_name])
+                create_pr(intermediate_branch_name, onto)
                 failed = True
                 break
 
