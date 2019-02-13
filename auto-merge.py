@@ -2,7 +2,7 @@ import subprocess
 import sys
 import json
 import os
-import time
+import datetime
 
 # command line arguments
 branches_str = sys.argv[1]
